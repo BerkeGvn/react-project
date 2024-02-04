@@ -31,6 +31,10 @@ export default function App() {
       <p id="actions">
         <button onClick={handleSaveData}>Save Data</button>
       </p>
+      <img
+        src="../public/asd.svg"
+        alt=""
+      />
     </div>
   );
 }
