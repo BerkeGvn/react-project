@@ -35,6 +35,10 @@ export default function App() {
         src="../public/asd.svg"
         alt=""
       />
+      <img
+        src="../public/asd.svg"
+        alt=""
+      />
     </div>
   );
 }
