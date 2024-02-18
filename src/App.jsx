@@ -39,6 +39,7 @@ export default function App() {
         src="../public/asd.svg"
         alt=""
       />
+      <p>control</p>
     </div>
   );
 }
