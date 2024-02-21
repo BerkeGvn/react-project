@@ -1,45 +1,79 @@
-import { useRef } from 'react';
-import Input from './components/Input';
+import { useState } from 'react';
 
-export const userData = {
-  name: '',
-  email: '',
-};
+import Header from './components/Header.jsx';
+import Shop from './components/Shop.jsx';
+import { DUMMY_PRODUCTS } from './dummy-products.js';
 
-export default function App() {
-  const nameRef = useRef('');
-  const emailRef = useRef('');
-  function handleSaveData() {
-    userData.name = nameRef.current.value;
-    userData.email = emailRef.current;
+function App() {
+  const [shoppingCart, setShoppingCart] = useState({
+    items: [],
+  });
 
-    console.log(userData);
+  function handleAddItemToCart(id) {
+    setShoppingCart((prevShoppingCart) => {
+      const updatedItems = [...prevShoppingCart.items];
+
+      const existingCartItemIndex = updatedItems.findIndex(
+        (cartItem) => cartItem.id === id
+      );
+      const existingCartItem = updatedItems[existingCartItemIndex];
+
+      if (existingCartItem) {
+        const updatedItem = {
+          ...existingCartItem,
+          quantity: existingCartItem.quantity + 1,
+        };
+        updatedItems[existingCartItemIndex] = updatedItem;
+      } else {
+        const product = DUMMY_PRODUCTS.find((product) => product.id === id);
+        updatedItems.push({
+          id: id,
+          name: product.title,
+          price: product.price,
+          quantity: 1,
+        });
+      }
+
+      return {
+        items: updatedItems,
+      };
+    });
+  }
+
+  function handleUpdateCartItemQuantity(productId, amount) {
+    setShoppingCart((prevShoppingCart) => {
+      const updatedItems = [...prevShoppingCart.items];
+      const updatedItemIndex = updatedItems.findIndex(
+        (item) => item.id === productId
+      );
+
+      const updatedItem = {
+        ...updatedItems[updatedItemIndex],
+      };
+
+      updatedItem.quantity += amount;
+
+      if (updatedItem.quantity <= 0) {
+        updatedItems.splice(updatedItemIndex, 1);
+      } else {
+        updatedItems[updatedItemIndex] = updatedItem;
+      }
+
+      return {
+        items: updatedItems,
+      };
+    });
   }
 
   return (
-    <div id="app">
-      <Input
-        type="text"
-        label="Your Name"
-        ref={nameRef}
+    <>
+      <Header
+        cart={shoppingCart}
+        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
-      <Input
-        type="email"
-        label="Your E-Mail"
-        ref={emailRef}
-      />
-      <p id="actions">
-        <button onClick={handleSaveData}>Save Data</button>
-      </p>
-      <img
-        src="../public/asd.svg"
-        alt=""
-      />
-      <img
-        src="../public/asd.svg"
-        alt=""
-      />
-      <h3>control</h3>
-    </div>
+      <Shop onAddItemToCart={handleAddItemToCart} />
+    </>
   );
 }
+
+export default App;
