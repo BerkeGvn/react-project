@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import CartContext from './store/CartContext.jsx';
 import Header from './components/Header.jsx';
 import Shop from './components/Shop.jsx';
 import { DUMMY_PRODUCTS } from './dummy-products.js';
@@ -13,9 +13,7 @@ function App() {
     setShoppingCart((prevShoppingCart) => {
       const updatedItems = [...prevShoppingCart.items];
 
-      const existingCartItemIndex = updatedItems.findIndex(
-        (cartItem) => cartItem.id === id
-      );
+      const existingCartItemIndex = updatedItems.findIndex((cartItem) => cartItem.id === id);
       const existingCartItem = updatedItems[existingCartItemIndex];
 
       if (existingCartItem) {
@@ -43,9 +41,7 @@ function App() {
   function handleUpdateCartItemQuantity(productId, amount) {
     setShoppingCart((prevShoppingCart) => {
       const updatedItems = [...prevShoppingCart.items];
-      const updatedItemIndex = updatedItems.findIndex(
-        (item) => item.id === productId
-      );
+      const updatedItemIndex = updatedItems.findIndex((item) => item.id === productId);
 
       const updatedItem = {
         ...updatedItems[updatedItemIndex],
@@ -65,14 +61,17 @@ function App() {
     });
   }
 
+  const ctxCart = {
+    items: shoppingCart.items,
+    addItemToCart: handleAddItemToCart,
+    updateCartItemQuantity: handleUpdateCartItemQuantity,
+  };
+
   return (
-    <>
-      <Header
-        cart={shoppingCart}
-        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
-      />
-      <Shop onAddItemToCart={handleAddItemToCart} />
-    </>
+    <CartContext.Provider value={ctxCart}>
+      <Header />
+      <Shop />
+    </CartContext.Provider>
   );
 }
 
