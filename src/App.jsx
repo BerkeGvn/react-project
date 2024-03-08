@@ -39,7 +39,7 @@ function App() {
       <div
         style={{
           position: 'absolute',
-          backgroundColor: 'pink',
+          backgroundColor: 'red',
           borderRadius: '50%',
           opacity: 0.6,
           transform: `translate(${position.x}px, ${position.y}px)`,
