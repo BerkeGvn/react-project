@@ -1,48 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 function App() {
-  const [fullname, setFullname] = useState({
-    name: '',
-    surname: '',
-  });
+  const [value, setValue] = useState('');
+  const [count, setCount] = useState(-1);
+  const test = useRef(0);
 
-  function setName(e) {
-    const newName = e.target.value;
-    setFullname((prev) => {
-      return {
-        ...prev,
-        name: newName,
-      };
-    });
-  }
-  function setSurname(e) {
-    const newSurname = e.target.value;
-    setFullname((asd) => {
-      return {
-        ...asd,
-        surname: newSurname,
-      };
-    });
-  }
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [canMove, setCanMove] = useState(true);
 
+  useEffect(() => setCount(count + 1), [value]);
+
+  const onChange = ({ target }) => setValue(target.value);
+  test.current++;
+
+  useEffect(() => {
+    function handleMove(e) {
+      setPosition({ x: e.clientX, y: e.clientY });
+    }
+    window.addEventListener('pointermove', handleMove);
+    return () => window.removeEventListener('pointermove', handleMove);
+  }, []);
   return (
-    <>
+    <div>
       <input
         type="text"
-        name="name"
-        id="name"
-        onChange={setName}
+        value={value}
+        onChange={onChange}
       />
-      <input
-        type="text"
-        name="surname"
-        id="surname"
-        onChange={setSurname}
+      <div>Number of changes: {count}</div>
+      <label>
+        <input
+          type="checkbox"
+          checked={canMove}
+          onChange={(e) => setCanMove(e.target.checked)}
+        />
+        The dot is allowed to move
+      </label>
+      <div
+        style={{
+          position: 'absolute',
+          backgroundColor: 'pink',
+          borderRadius: '50%',
+          opacity: 0.6,
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          pointerEvents: 'none',
+          left: -20,
+          top: -20,
+          width: 40,
+          height: 40,
+        }}
       />
-      <h1>
-        {fullname.name} {fullname.surname}
-      </h1>
-    </>
+    </div>
   );
 }
 
