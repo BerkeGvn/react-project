@@ -8,7 +8,7 @@ function App() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [canMove, setCanMove] = useState(true);
 
-  useEffect(() => setCount(count + 1), [value]);
+  useEffect(() => setCount(count + 1), [count, value]);
 
   const onChange = ({ target }) => setValue(target.value);
   test.current++;
