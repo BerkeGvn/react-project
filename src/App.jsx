@@ -15,6 +15,7 @@ function App() {
 
   useEffect(() => {
     function handleMove(e) {
+      console.log(e.clientX, e.clientY);
       setPosition({ x: e.clientX, y: e.clientY });
     }
     window.addEventListener('pointermove', handleMove);
@@ -34,7 +35,7 @@ function App() {
           checked={canMove}
           onChange={(e) => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        The dot is allowed to move.
       </label>
       <div
         style={{
