@@ -1,3 +1,3 @@
 export default function SearchButton() {
-  return <div>SearchButton</div>;
+  return <button>Search </button>;
 }

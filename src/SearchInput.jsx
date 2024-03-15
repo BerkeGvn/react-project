@@ -1,3 +1,3 @@
 export default function SearchInput() {
-  return <div>SearchInput</div>;
+  return <input placeholder="search"></input>;
 }
