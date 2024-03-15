@@ -1,10 +1,16 @@
-import { forwardRef } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 
 const SearchInput = forwardRef((props, ref) => {
+  const inputRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    focus() {
+      inputRef.current.focus();
+    },
+  }));
   return (
     <input
       {...props}
-      ref={ref}
+      ref={inputRef}
       placeholder="search"
     ></input>
   );
