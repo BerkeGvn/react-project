@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 
 export default function ProgressBar({ timer }) {
@@ -13,5 +14,10 @@ export default function ProgressBar({ timer }) {
     };
   }, []);
 
-  return <progress value={remainingTime} max={timer} />;
+  return (
+    <progress
+      value={remainingTime}
+      max={timer}
+    />
+  );
 }
