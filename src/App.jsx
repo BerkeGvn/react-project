@@ -5,13 +5,15 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
+import { updateUserPlaces } from './fetch.js';
+import Error from './components/Error.jsx';
 
 function App() {
   const selectedPlace = useRef();
 
   const [userPlaces, setUserPlaces] = useState([]);
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -22,7 +24,7 @@ function App() {
     setModalIsOpen(false);
   }
 
-  function handleSelectPlace(selectedPlace) {
+  async function handleSelectPlace(selectedPlace) {
     setUserPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
@@ -32,19 +34,46 @@ function App() {
       }
       return [selectedPlace, ...prevPickedPlaces];
     });
+
+    try {
+      await updateUserPlaces([selectedPlace, ...userPlaces]);
+    } catch (error) {
+      setUserPlaces(userPlaces);
+      setUpdateError({ message: error.message || 'an error occured when updating places' });
+    }
   }
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
     setUserPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
+      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id),
     );
 
     setModalIsOpen(false);
   }, []);
 
+  function handleUpdateError() {
+    setUpdateError(null);
+  }
+
   return (
     <>
-      <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
+      <Modal
+        open={updateError}
+        onClose={handleUpdateError}
+      >
+        {updateError && (
+          <Error
+            title={'An error Occured'}
+            message={updateError.message}
+            onConfirm={handleUpdateError}
+          ></Error>
+        )}
+      </Modal>
+
+      <Modal
+        open={modalIsOpen}
+        onClose={handleStopRemovePlace}
+      >
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
@@ -52,11 +81,13 @@ function App() {
       </Modal>
 
       <header>
-        <img src={logoImg} alt="Stylized globe" />
+        <img
+          src={logoImg}
+          alt="Stylized globe"
+        />
         <h1>PlacePicker</h1>
         <p>
-          Create your personal collection of places you would like to visit or
-          you have visited.
+          Create your personal collection of places you would like to visit or you have visited.
         </p>
       </header>
       <main>
